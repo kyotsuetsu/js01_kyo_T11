@@ -27,12 +27,16 @@
 let result;
 // let judge;
 const music = new Audio('sound/後出しただーん.m4a');
+
+// // スタートボタンを1回しかおせなくする
+// (".start").disabled = true;
+
 // 実装方針 2.自分の出す手の画像をクリックした時にジャンケンの試行回数を1回増やす必要がある
 // クリックイベントでは引数を取得できないので、関数の外からでも参照できるように変数をグローバル化します
 // グローバル変数については次のURLを確認してください
 // https://qiita.com/Ken-768/items/7f41512ec045041b102e
 // 終了とする試行回数を設定する変数
-var finishCount = 3
+var finishCount = 10
 var winCount = 0
 var loseCount = 0
 
@@ -45,15 +49,58 @@ var loseCount = 0
 
 // --------[タイマ]-------------------------------------
 let timer = $('#time_limit');
+
 function countDown() {
+
     if (timer.val() > 0 ) {
         timer.val(timer.val() - 1);
-        setTimeout(countDown, 40);
+        setTimeout(countDown, 20);
+      // タイマーがゼロになった時の処理
+    }else if(timer.val() == 0 && loseCount == 0 && winCount == 0) {
+      msg = "ざんねん！もういっかい！";
+          $("#oneMore").html(msg);
+          console.log("もういっかい");
+          timer.hide();
+          $('.choises').hide();
+          $('.img').hide();
+
+    }else if(timer.val() == 0 && loseCount == 1 ) {
+      msg = "もういっかい！";
+          $("#oneMore").html(msg);
+          console.log("もういっかい");
+          timer.hide();
+          $('.choises').hide();
+          $('.img').hide();
+          $("#resultMsg").hide();
     }
+
+    
 }
+
+// もう一度スタート。ランダム画像が無限に出てしまう
+$("#oneMore").click(function(){
+  $("#oneMore").hide();
+  $("#resultMsg").hide();
+
+  catJanken();
+})
+
+// function timeUp(){
+//   if(timer.val() == 0 && loseCount == 0){
+//     msg = "もっと脳年齢を鍛えよう！";
+//     $("#resultMsg").html(msg);
+
+//   }else{
+//     msg.hide();
+//   }
+
+// }
+
+
 
 //------[じゃんけんの画像表示]--------------------------------------------------------------------------------------------
 var catJanken = function(){
+
 
     setTimeout(function(){
       $('.start').hide(),
@@ -101,25 +148,18 @@ var catJanken = function(){
       console.log("パー");
       $(".neko_paa").show();
       } 
+      
+      // タイムリミットの開始
+      timer.val(100);
+      countDown();
+
+      // 表示
+      timer.show();
+      $(".choises").show();
+     
 
     },6000);
 
-    // タイムリミットの開始
-
-    setTimeout(function() {
-
-      $("#time_limit").show();
-      $("#time_limit").val(100);
-
-
-      if (timer.val() > 0 ) {
-        timer.val(timer.val() - 1);
-        setTimeout(countDown, 100);
-      }
-
-
-
-    },6000)
   }
 
 //-----------------------------------------------------------------------------------------------------------------------------
@@ -135,6 +175,8 @@ var catJanken = function(){
 
   var view = "";
   var msg = "";
+  var renshou = "";
+  
 //-----------------------------------------------------------------------------------------------------------------------------
 
 //----[グーの処理]---------------------------------------------------------------------------------------------------------------
@@ -142,32 +184,44 @@ var catJanken = function(){
   $("#jibun_goo").click(function(){
     console.log("クリックしました");
 
+    clearInterval(timer.val);
+    
+    
+
     if(result === 2 ){
         console.log("かち");
         view = "きみのかち！";
         $('.img').hide();
         console.log("表示");
         winCount++
+        renshou ="連勝記録:" + winCount;
 
 
       console.log("time_limitにvalueをセット");
+      $("#echo").html(view);
+      $("#echo").show();
 
         
     }else {
         console.log("まけ");
-        view ="ざんねん";
+        // view ="ざんねん";
         $('.img').hide();
         console.log("表示");
         console.log("lose表示");
         loseCount++
         
     }
-    $("#echo").html(view);
-    $("#echo").show();
+    
+    // $("#echo").show();
 
         // タイムリミットの値を戻す
-        $("#time_limit").hide();
+        timer.val(100);
+        timer.hide();
         console.log("time_limitを隠す");
+
+    // 表示画面
+    $("#renshou").html(renshou);
+        
 
 
     //---[10回 or 負けでゲーム終了]--------------------------
@@ -177,9 +231,26 @@ var catJanken = function(){
       console.log("クリア！！");
 
     }else if(loseCount == 1){
-      msg = "もっと脳年齢を鍛えよう！";
-      $("#resultMsg").html(msg);
-      console.log("終わり");
+      //正解回数に応じた脳年齢表示------------------------
+
+      if(winCount == 0 || winCount == 1){
+        msg = "ざんねん！きみの脳年齢は70歳！";
+        $("#resultMsg").html(msg);
+       }else if(winCount == 2 || winCount == 3){
+         msg = "ざんねん！きみの脳年齢は60歳！"; 
+        $("#resultMsg").html(msg);
+       }else if(winCount == 4 || winCount == 5){ 
+         msg = "ざんねん！きみの脳年齢は50歳！"; 
+        $("#resultMsg").html(msg);
+       }else if(winCount == 6 || winCount == 7){
+         msg = "ざんねん！きみの脳年齢は40歳！";
+        $("#resultMsg").html(msg);
+       }else if(winCount == 8 || winCount == 9){
+         msg = "おしい！きみの脳年齢は30歳！";
+        $("#resultMsg").html(msg);
+       }
+ 
+       //-------------------------------------------------
     
     }else{
       $('.img').hide();
@@ -187,6 +258,8 @@ var catJanken = function(){
       console.log("もう一回")
     }
   });
+
+  
 //---------------------------------------------------------------------------------------------------------------------------------
 
 //チョキの処理----------------------------------------------------------------------------------------------------------------------
@@ -194,30 +267,39 @@ var catJanken = function(){
   $("#jibun_choki").click(function(){
     console.log("クリックしました")
 
+
     if(result ===  0 ){
         console.log("かち");
         view = "きみのかち！";
         $('.img').hide();
         console.log("表示");
         winCount++
+        renshou ="連勝記録:" + winCount
+
+        $("#echo").html(view);
+        $("#echo").show();
         
         
     }else {
         console.log("まけ");
-        view = "ざんねん";
+        // view = "ざんねん";
         $('.img').hide();
         console.log("表示");
         loseCount++
         
     }
 
-    $("#echo").html(view);
-    $("#echo").show();
-
    
 // タイムリミットの値を戻す
-$("#time_limit").hide();
-console.log("time_limitを隠す");
+      timer.val(100);
+      timer.hide();
+      console.log("time_limitを隠す");
+
+// 表示画面
+$("#renshou").html(renshou);
+
+
+
 
 
     //---[10回 or 負けでゲーム終了]--------------------------
@@ -227,9 +309,26 @@ console.log("time_limitを隠す");
       console.log("クリア！！");
 
     }else if(loseCount == 1){
-      msg = "もっと脳年齢を鍛えよう！";
-      $("#resultMsg").html(msg);
-      console.log("終わり");
+      //正解回数に応じた脳年齢表示------------------------
+
+      if(winCount == 0 || winCount == 1){
+        msg = "ざんねん！きみの脳年齢は70歳！";
+        $("#resultMsg").html(msg);
+       }else if(winCount == 2 || winCount == 3){
+         msg = "ざんねん！きみの脳年齢は60歳！"; 
+        $("#resultMsg").html(msg);
+       }else if(winCount == 4 || winCount == 5){ 
+         msg = "ざんねん！きみの脳年齢は50歳！"; 
+        $("#resultMsg").html(msg);
+       }else if(winCount == 6 || winCount == 7){
+         msg = "ざんねん！きみの脳年齢は40歳！";
+        $("#resultMsg").html(msg);
+       }else if(winCount == 8 || winCount == 9){
+         msg = "おしい！きみの脳年齢は30歳！";
+        $("#resultMsg").html(msg);
+       }
+ 
+       //-------------------------------------------------
     
     }else{
       $('.img').hide();
@@ -250,27 +349,32 @@ $("#jibun_paa").click(function(){
       $('.img').hide();
       console.log("表示");
       winCount++
-      // タイムリミットの値を戻す
-      $("#time_limit").val(100);
-      console.log("time_limitにvalueをセット");
+      renshou ="連勝記録:" + winCount
+
+    $("#echo").html(view);
+     $("#echo").show();
       
       
   }else {
       console.log("まけ");
-      view = "ざんねん";
+      // view = "ざんねん";
       $('.img').hide();
       console.log("表示");
       loseCount++
       
   }
 
-  $("#echo").html(view);
-  $("#echo").show();
+  // $("#echo").html(view);
+  // $("#echo").show();
+
+  // 表示画面
+  $("#renshou").html(renshou);
 
 
-  // タイムリミットの値を戻す
-  $("#time_limit").hide();
+
+  timer.hide();
   console.log("time_limitを隠す");
+
 
   //---[10回 or 負けでゲーム終了]--------------------------
   if(winCount == finishCount){
@@ -279,9 +383,26 @@ $("#jibun_paa").click(function(){
     console.log("クリア！！");
 
   }else if(loseCount == 1){
-    msg = "もっと脳年齢を鍛えよう！";
+   //正解回数に応じた脳年齢表示------------------------
+
+   if(winCount == 0 || winCount == 1){
+    msg = "ざんねん！きみの脳年齢は70歳！";
     $("#resultMsg").html(msg);
-    console.log("終わり");
+   }else if(winCount == 2 || winCount == 3){
+     msg = "ざんねん！きみの脳年齢は60歳！"; 
+    $("#resultMsg").html(msg);
+   }else if(winCount == 4 || winCount == 5){ 
+     msg = "ざんねん！きみの脳年齢は50歳！"; 
+    $("#resultMsg").html(msg);
+   }else if(winCount == 6 || winCount == 7){
+     msg = "ざんねん！きみの脳年齢は40歳！";
+    $("#resultMsg").html(msg);
+   }else if(winCount == 8 || winCount == 9){
+     msg = "おしい！きみの脳年齢は30歳！";
+    $("#resultMsg").html(msg);
+   }
+
+   //-------------------------------------------------
   
   }else{
     $('.img').hide();
@@ -290,6 +411,10 @@ $("#jibun_paa").click(function(){
   }
 });
 //-----------------------------------------------------------------------
+
+// 繰り返しボタン
+
+
     
 
     // 音声再生
