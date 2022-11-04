@@ -77,13 +77,15 @@ function countDown() {
     
 }
 
-// もう一度スタート。ランダム画像が無限に出てしまう
-$("#oneMore").click(function(){
-  $("#oneMore").hide();
-  $("#resultMsg").hide();
+// もう一度スタート。
+// $("#oneMore").click(function(){
+//   $("#oneMore").hide();
+//   $("#resultMsg").hide();
 
-  catJanken();
-})
+//   winCount = 0;
+
+//   catJanken();
+// })
 
 // function timeUp(){
 //   if(timer.val() == 0 && loseCount == 0){
@@ -156,6 +158,7 @@ var catJanken = function(){
       // 表示
       timer.show();
       $(".choises").show();
+
      
 
     },6000);
@@ -249,6 +252,8 @@ var catJanken = function(){
          msg = "おしい！きみの脳年齢は30歳！";
         $("#resultMsg").html(msg);
        }
+
+       
  
        //-------------------------------------------------
     
