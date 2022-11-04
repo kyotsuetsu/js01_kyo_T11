@@ -26,7 +26,7 @@
 
 let result;
 // let judge;
-const music = new Audio('sound/後出しただーん.m4a');
+const music = new Audio('sound/Tadanokoe.m4a');
 
 // // スタートボタンを1回しかおせなくする
 // (".start").disabled = true;
@@ -78,14 +78,14 @@ function countDown() {
 }
 
 // もう一度スタート。
-// $("#oneMore").click(function(){
-//   $("#oneMore").hide();
-//   $("#resultMsg").hide();
+$("#oneMore").click(function(){
+  $("#oneMore").hide();
+  $("#resultMsg").hide();
 
-//   winCount = 0;
+  winCount = 0;
 
-//   catJanken();
-// })
+  catJanken();
+})
 
 // function timeUp(){
 //   if(timer.val() == 0 && loseCount == 0){
