@@ -37,8 +37,31 @@ const music = new Audio('sound/Tadanokoe.m4a');
 // https://qiita.com/Ken-768/items/7f41512ec045041b102e
 // 終了とする試行回数を設定する変数
 var finishCount = 10
-var winCount = 0
-var loseCount = 0
+var winCount=0;
+var loseCount=0;
+var nou=0;
+
+function nounenrei() { 
+  if(winCount == 0 || winCount == 1){
+    nou = 70;
+    $("#nounenrei").html(nou);
+  }else if(winCount == 2 || winCount == 3){
+    nou = 60; 
+    $("#nounenrei").html(nou);
+  }else if(winCount == 4 || winCount == 5){ 
+    nou = 50; 
+    $("#nounenrei").html(nou);
+  }else if(winCount == 6 || winCount == 7){
+    nou = 40;
+    $("#nounenrei").html(nou);
+  }else if(winCount == 8 || winCount == 9){
+    nou = 30;
+    $("#nounenrei").html(nou);
+  }
+}
+
+
+
 
 
 
@@ -63,6 +86,7 @@ function countDown() {
           timer.hide();
           $('.choises').hide();
           $('.img').hide();
+          $('#oneMore').show();
 
     }else if(timer.val() == 0 && loseCount == 1 ) {
       msg = "もういっかい！";
@@ -81,6 +105,7 @@ function countDown() {
 $("#oneMore").click(function(){
   $("#oneMore").hide();
   $("#resultMsg").hide();
+  $('#oneMore').hide();
 
   winCount = 0;
 
@@ -97,6 +122,7 @@ $("#oneMore").click(function(){
 //   }
 
 // }
+
 
 
 
@@ -187,7 +213,7 @@ var catJanken = function(){
   $("#jibun_goo").click(function(){
     console.log("クリックしました");
 
-    clearInterval(timer.val);
+    // clearInterval(timer.val);
     
     
 
@@ -203,6 +229,9 @@ var catJanken = function(){
       console.log("time_limitにvalueをセット");
       $("#echo").html(view);
       $("#echo").show();
+
+      $("#renshowKiroku").html(winCount);
+      console.log("連勝記録");
 
         
     }else {
@@ -233,6 +262,8 @@ var catJanken = function(){
       $("#resultMsg").html(msg);
       console.log("クリア！！");
 
+      $("#list").append(html);
+
     }else if(loseCount == 1){
       //正解回数に応じた脳年齢表示------------------------
 
@@ -253,8 +284,8 @@ var catJanken = function(){
         $("#resultMsg").html(msg);
        }
 
-       
- 
+       $("#list").append(html);
+
        //-------------------------------------------------
     
     }else{
@@ -262,6 +293,41 @@ var catJanken = function(){
       catJanken();
       console.log("もう一回")
     }
+
+
+    let object = {
+    
+      "table_time":time,
+      "renshowKiroku":winCount,
+      "nounenrei":nounenrei()
+  }
+    console.log(object);
+
+      // // 書き込み ※JavaScriptオブジェクト -> JSON文字列に変換
+      // localStorage.setItem(JSON.stringify(object));
+      // console.log("書き込み");
+  
+      // // 読み込み ※JSON文字列 -> JavaScriptオブジェクトに変換
+      // JSON.parse(localStorage.getItem("object"));
+      // console.log("読み込み");
+
+      var userJson = JSON.stringify(object); // JSON文字列へ変換
+      console.log(userJson);
+      // {"name":"Taro","age":30,"active":true}
+      // undefined
+
+      var parsed = JSON.parse(userJson); // オブジェクトへ変換
+      console.log(parsed);
+      // { name: 'Taro', age: 30, active: true }
+
+      //  // 表示
+      //   $("#table_time").html(time);
+      //   console.log("日時");
+      //   $("#renshowKiroku").html(winCount);
+      //   console.log("連勝記録");
+
+
+      
   });
 
   
@@ -283,6 +349,9 @@ var catJanken = function(){
 
         $("#echo").html(view);
         $("#echo").show();
+
+        $("#renshowKiroku").html(winCount);
+        console.log("連勝記録");
         
         
     }else {
@@ -313,6 +382,8 @@ $("#renshou").html(renshou);
       $("#resultMsg").html(msg);
       console.log("クリア！！");
 
+      $("#list").append(html);
+
     }else if(loseCount == 1){
       //正解回数に応じた脳年齢表示------------------------
 
@@ -332,6 +403,8 @@ $("#renshou").html(renshou);
          msg = "おしい！きみの脳年齢は30歳！";
         $("#resultMsg").html(msg);
        }
+
+       $("#list").append(html);
  
        //-------------------------------------------------
     
@@ -340,6 +413,38 @@ $("#renshou").html(renshou);
       catJanken();
       console.log("もう一回")
     }
+
+    // 表示
+    $("#table_time").html(time);
+    console.log("日時");
+    $("#renshowKiroku").html(winCount);
+    console.log("連勝記録");
+
+    let object = {
+      "table_time":time,
+      "renshowKiroku":winCount,
+      "nounenrei":nounenrei(),
+   }
+  console.log(object);
+
+        // 書き込み ※JavaScriptオブジェクト -> JSON文字列に変換
+        localStorage.setItem("object", JSON.stringify(object));
+        console.log("書き込み");
+    
+        // 読み込み ※JSON文字列 -> JavaScriptオブジェクトに変換
+        JSON.parse(localStorage.getItem("object"));
+        console.log("読み込み");
+         // htmlに表示させる
+         const html = `
+         ${object}
+                // <tr>
+                //     <td>${time}</td>
+                //     <td>${winCount}</td>
+                //     <td>${nou}</td>
+                // </tr>    
+            `;
+            
+        
   });
 //-------------------------------------------------------------------------------------------------------------------------------
 
@@ -358,6 +463,9 @@ $("#jibun_paa").click(function(){
 
     $("#echo").html(view);
      $("#echo").show();
+
+     $("renshowKiroku").html(winCount);
+     console.log("連勝記録");
       
       
   }else {
@@ -386,6 +494,7 @@ $("#jibun_paa").click(function(){
     msg = "クリア！！君の脳年齢は２０歳！"
     $("#resultMsg").html(msg);
     console.log("クリア！！");
+    
 
   }else if(loseCount == 1){
    //正解回数に応じた脳年齢表示------------------------
@@ -407,6 +516,8 @@ $("#jibun_paa").click(function(){
     $("#resultMsg").html(msg);
    }
 
+
+
    //-------------------------------------------------
   
   }else{
@@ -414,13 +525,140 @@ $("#jibun_paa").click(function(){
     catJanken();
     console.log("もう一回")
   }
+
+    // // 表示
+    // $("#table_time").html(time);
+    // console.log("日時");
+    // $("#renshowKiroku").html(winCount);
+    // console.log("連勝記録");
+
+  let object = {
+    "table_time":time,
+    "renshowKiroku":winCount,
+    "nounenrei":nounenrei(),
+  }
+  console.log(object);
+
+        // 書き込み ※JavaScriptオブジェクト -> JSON文字列に変換
+        localStorage.setItem("object", JSON.stringify(object));
+        console.log("書き込み");
+    
+        // 読み込み ※JSON文字列 -> JavaScriptオブジェクトに変換
+        JSON.parse(localStorage.getItem(object));
+        console.log("読み込み");
+
+
+        const sonyu = 
+            `
+                <tr>
+                    <td>${object.time}</td>
+                    <td>${object.winCount}</td>
+                    <td>${object.nounenrei()}</td>
+                </tr>    
+            `;
+        $("#list").append(sonyu);
+            
+
+
+        // console.log(Object.keys(object));
+
+        // Object.keys(object).forEach(function (key) {
+        //   let val=object[key];
+        //   console.log(key+"---"+val);
+      // });
+        
+      
+
+
 });
 //-----------------------------------------------------------------------
 
-// 繰り返しボタン
 
+// 1.日時の取得
+var dateObj = new Date();
+var time = '';
 
+var aryWeek = ['日', '月', '火', '水', '木', '金', '土'];
+
+time = dateObj.getFullYear() + '年' + //年の取得
+       (dateObj.getMonth() + 1) + '月' + //月の取得 ※0~11で取得になるため+1
+       dateObj.getDate() + '日' + //日付の取得
+       '(' + aryWeek[dateObj.getDay()] + ')' + //曜日の取得 0~6で取得になるため事前に配列で設定
+       dateObj.getHours() + '時' + //時間の取得
+       dateObj.getMinutes() + '分' + //分の取得
+       dateObj.getSeconds() + '秒'; //秒の取得
+
+console.log(time);
+
+// 2.記録・脳年齢を計算して
+// 3.オブジェクトに入れる
+  //   let object = {
     
+  //     "table_time" : time,
+  //     "renshowKiroku" : winCount,
+  //     "nounenrei":nounenrei(),
+
+  // }
+  //   console.log(object)
+
+// 4.ローカルストレージに保存(じゃんけんグーチョキパー内のみに記載)
+    // // 書き込み ※JavaScriptオブジェクト -> JSON文字列に変換
+    // localStorage.setItem("object", JSON.stringify(object));
+    // console.log("書き込み");
+
+    // // 読み込み ※JSON文字列 -> JavaScriptオブジェクトに変換
+    // JSON.parse(localStorage.setItem("object"));
+    // console.log("読み込み");
+
+    // 削除 ※変わらず
+    // localStorage.removeItem("object");
+
+// // 5.全部出力してhtmlに書く
+
+
+// function json_get(){
+
+//         //jsonデータ取得
+//         let jsonData = JSON.stringify(object);
+
+//         for (var i = 0; i < object.goods.length; i++) {
+        
+// 		//商品名を取得
+// 	        let json_good_list = '<div class="list">' + json_data.goods[i].name + '</item>';
+// 		jQuery('.goods').append(json_good_list)
+//         }
+// }
+
+// 6.反復処理
+
+// htmlに記録追加
+const html = `
+<tr>
+    <td>${time}</td>
+    <td>${winCount}</td>
+    <td>${nounenrei()}</td>
+</tr>    
+`;
+
+
+
+// 6.if文で７行目以降は更新と設定する
+
+// for (let i = 0; i < localStorage.length; i++) {
+//   const key = localStorage.key(i);
+//   const value = localStorage.getItem(key);
+//   const html = `
+//   <tr>
+//       <td>${time}</td>
+//       <td>${winCount}</td>
+//       <td>${nounenrei()}</td>
+//   </tr>  
+
+// `
+//   // 画面上に埋め込み
+//   $("#list").append(html)
+// }
+
 
     // 音声再生
 
